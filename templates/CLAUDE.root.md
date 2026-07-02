@@ -16,6 +16,7 @@ codename if they differ.>
 |-- scripts/        # docs-code sync gate + bootstrap phase checker
 |-- tests/          # test suite; tests/docs/ enforces the documentation contract
 |-- CLAUDE.md       # this file
+|-- AGENTS.md       # pointer here, for tools that read AGENTS.md instead
 ...
 ```
 
@@ -37,6 +38,9 @@ codename if they differ.>
    (`python scripts/check_docs_sync.py`) enforces this.
 6. **Evaluate every design proposal against `docs/PRINCIPLES.md`.** If a
    proposal violates a principle, redesign before implementing.
+7. **Keep every `CLAUDE.md` lean.** It loads into every session. When editing
+   one, add only what changes AI behavior; prefer cutting words over adding
+   them, never pad for completeness.
 
 # Documentation References
 

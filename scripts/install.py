@@ -50,6 +50,7 @@ FILE_MAP: list[tuple[str, str]] = [
     ("templates/document_maintenance.md", "docs/skill/document_maintenance.md"),
     ("templates/doc-audit-SKILL.md", ".claude/skills/doc-audit/SKILL.md"),
     ("templates/CLAUDE.root.md", "CLAUDE.md"),
+    ("templates/AGENTS.root.md", "AGENTS.md"),
     ("templates/placeholders/changelog__README.md", "docs/changelog/README.md"),
     ("templates/placeholders/decisions__README.md", "docs/decisions/README.md"),
     ("templates/placeholders/ADR-template.md", "docs/decisions/ADR-template.md"),
