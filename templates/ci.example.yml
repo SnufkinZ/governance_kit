@@ -1,0 +1,52 @@
+# Example CI wiring for the governance kit.
+# Copy to .github/workflows/ci.yml in the target repo and adapt the build jobs.
+# The two jobs that matter for the control system are `docs-sync` and the
+# `tests/docs/` run inside your test job.
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  docs-sync:
+    name: docs-code sync gate (Tier 3)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0            # full history so the base ref is diffable
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: design-doc ownership gate
+        run: |
+          # PR: diff against the PR base; push: origin/main (vacuous on the
+          # main branch itself — the gate does its work on PRs).
+          BASE="${{ github.event.pull_request.base.sha }}"
+          # PHASE 0: keep --warn-only. Remove it at Phase 0->1 graduation
+          # (BOOTSTRAP.md R0.1) to make the gate blocking.
+          python scripts/check_docs_sync.py --base "${BASE:-origin/main}" --warn-only
+
+  tests:
+    name: tests (incl. Tier 1-2 doc checks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      # - run: pip install -r requirements.txt   # uncomment when you have deps
+      - run: pip install pytest pyyaml
+      - run: pytest tests/docs/                   # Tiers 1-2 + ownership-gate unit tests
+      # - run: pytest tests/                       # your full suite, once it exists
