@@ -77,7 +77,7 @@ The full contract is `WORKFLOW.md`; the machinery spec is `design_doc_sync.md`.
 | `scripts/check_docs_sync.py` | **Tier 3 gate.** Builds a `code → owning-doc` map from `> **Code:**` lines and fails a diff whose owned code changed without its doc. | Yes — edit two PORT constants |
 | `scripts/check_bootstrap_phase.py` | Scores the machine-checkable Phase 0 → 1 graduation signals. | Yes |
 | `tests_docs/` | **Tiers 1–2 starter tests + Tier 3 unit tests.** Green in a fresh install; start biting as conventions are used. See `tests_docs/README.md`. | Yes — one PORT-marked fixture block |
-| `templates/` | Authoring skills (design contract, in-process plan, document maintenance), the Tier 4 `/doc-audit` skill, a root-`CLAUDE.md` starter, the CI example, and the placeholder files the boot phase drops in. | Yes |
+| `templates/` | Authoring skills (design contract, in-process plan, document maintenance), the Tier 4 `/doc-audit` skill, root `CLAUDE.md` + `AGENTS.md` starters (the latter points non-Claude agents at the former), the CI example, and the placeholder files the boot phase drops in. | Yes |
 | `MIGRATION.md` | The full file-by-file install map: what goes where, what to edit, in what order. | Yes |
 
 ## The one idea to keep straight

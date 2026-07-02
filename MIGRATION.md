@@ -17,6 +17,7 @@ spelled out — read it to know what landed where and what you must edit.
 ```
 <new-repo>/
 |-- CLAUDE.md                          # from templates/CLAUDE.root.md — EDIT the placeholders
+|-- AGENTS.md                          # from templates/AGENTS.root.md — pointer to CLAUDE.md for non-Claude agents
 |-- BOOTSTRAP.md                       # from kit root (deleted at maturity)
 |-- .claude/skills/doc-audit/SKILL.md  # from templates/doc-audit-SKILL.md (Tier 4 runbook)
 |-- scripts/
