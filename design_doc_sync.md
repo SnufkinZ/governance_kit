@@ -41,6 +41,7 @@ an aggregation layer or a sibling doc lags.** Layers 2 and 4 aim squarely at tha
 | Truth source | Must agree with | Enforced by |
 |---|---|---|
 | A directory's actual contents | the file tree in its `CLAUDE.md` | Tier 1 |
+| A control directory's existence | a `CLAUDE.md` map inside it (not a README) | Tier 1 |
 | A markdown link target | an existing file | Tier 1 |
 | An `in_process/` plan | the head-format contract + a Track section | Tier 1 |
 | A top-level plan's existence | a row/entry on the priority board | Tier 1 |
@@ -64,6 +65,13 @@ conventions grow (§7):
   child of the directory is listed (a tree may opt out of the completeness half
   with a bare `...` line). Generated/build directories are pruned. This keeps the
   per-directory maps honest as files come and go.
+- **Control directories carry a CLAUDE.md** — the two checks above keep an
+  *existing* map accurate but say nothing about a directory that has none. The
+  coverage check closes that gap: each directory in `REQUIRED_CLAUDE_DIRS`
+  (docs/, its control subtrees, and each ported code root) must contain a
+  `CLAUDE.md` — a README does not satisfy it, because `CLAUDE.md` is the file
+  the AI auto-loads. Listing a not-yet-created directory is a no-op, so
+  coverage grows as directories appear.
 - **Links resolve** — every relative markdown link under `docs/` points at a real
   file (frozen `archive/` trees exempt).
 - **in_process head format** — every plan/problem/change doc carries the standard

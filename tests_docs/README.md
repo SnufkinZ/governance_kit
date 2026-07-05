@@ -7,7 +7,7 @@ system — see `design_doc_sync.md` for what each tier means.
 
 | File | Tier | What it pins |
 |---|---|---|
-| `test_doc_consistency.py` | 1 | CLAUDE.md file trees match disk; relative links under `docs/` resolve; in_process docs carry the standard head + Track section; every plan is on the priority board. |
+| `test_doc_consistency.py` | 1 | CLAUDE.md file trees match disk; every control directory in `REQUIRED_CLAUDE_DIRS` carries a CLAUDE.md (not a README); relative links under `docs/` resolve; in_process docs carry the standard head + Track section; every plan is on the priority board. |
 | `test_change_log_draft.py` | 1 | The draft log obeys its inbox contract (dated batches, `Docs:` lines, consume = delete, size cap). |
 | `test_doc_contradictions.py` | 2 | A doc's own Status vs the board; board snapshot freshness; `**Version:**` header vs changelog entry. |
 | `test_ownership_gate.py` | 3 | The gate's pure functions: glob semantics (`*` does not cross `/`, `**` does), scope rules, bypass-trailer matching. |

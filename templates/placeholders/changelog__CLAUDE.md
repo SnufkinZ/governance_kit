@@ -1,6 +1,8 @@
 # Changelog (placeholder)
 
-> Rename to `docs/changelog/CLAUDE.md` (or keep a README) in the target repo.
+> Installs as `docs/changelog/CLAUDE.md`. Keep it a `CLAUDE.md` — this
+> directory carries a local map, not a README (see `docs/CLAUDE.md`
+> conventions).
 
 **Change history lives here.** One file per design doc, mirroring its versions.
 
