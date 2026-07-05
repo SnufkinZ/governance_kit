@@ -6,10 +6,13 @@ Checks enforced:
   1. Every CLAUDE.md file tree matches the directory it describes:
      listed entries exist; immediate children of the directory are listed
      (a tree containing a bare `...` line opts out of the completeness half).
-  2. Every relative markdown link under docs/ resolves to an existing file.
-  3. Every in_process plan/problem/change/feature doc carries the required
+  2. Every control directory in REQUIRED_CLAUDE_DIRS that exists carries a
+     CLAUDE.md map (a README does not satisfy it) — the coverage half of the
+     map contract.
+  3. Every relative markdown link under docs/ resolves to an existing file.
+  4. Every in_process plan/problem/change/feature doc carries the required
      head fields (docs/skill/in_process_plan_format.md) and a Track section.
-  4. Every top-level in_process plan_*/problem_* doc appears on the
+  5. Every top-level in_process plan_*/problem_* doc appears on the
      priority board (priority.md), so no plan can fall off the radar.
 
 All checks are vacuously green in a fresh install and start biting as soon
@@ -38,6 +41,21 @@ COMPLETENESS_EXEMPT = {
     "CLAUDE.md", "AGENTS.md", "__init__.py", "__pycache__",
     ".DS_Store", "node_modules", "package-lock.json",
 }
+
+# Control directories that MUST carry a local CLAUDE.md *if they exist*.
+# This is the coverage half of the map contract: the other tests keep an
+# existing CLAUDE.md honest; this one keeps a key directory from having none.
+# A README does not satisfy it — the loading convention is CLAUDE.md.
+# PORT: paths are repo-relative; add code roots (backend/, frontend/, ...) as
+# they appear. Listing a dir that does not exist yet is a no-op, not a failure.
+REQUIRED_CLAUDE_DIRS = [
+    "docs",
+    "docs/skill",
+    "docs/changelog",
+    "docs/decisions",
+    "docs/in_process",
+    "docs/audit",
+]
 
 # Both ASCII (`|--`, `` `-- ``) and box-drawing (├──, └──) tree styles count.
 TREE_MARKER = re.compile(r"^(?P<indent>[\s|│`]*)(?:\|--|`--|├──|└──)\s+(?P<name>\S+)")
@@ -178,6 +196,28 @@ def test_claude_md_trees_are_complete():
             if name not in listed:
                 failures.append(f"{claude.relative_to(REPO_ROOT)}: `{name}` exists but is not listed")
     assert not failures, "Incomplete CLAUDE.md trees (add the entry or a `...` line):\n" + "\n".join(failures)
+
+
+def test_control_dirs_have_claude_md():
+    """Every control directory that exists must carry a CLAUDE.md, not a README.
+
+    The two tests above keep an *existing* CLAUDE.md accurate; they say nothing
+    about a directory that has none. This is that missing coverage half — a key
+    directory silently shipping with only a README (or nothing) is the failure
+    this pins. Install the kit placeholder for the slot rather than a README.
+    """
+    failures = []
+    for rel in REQUIRED_CLAUDE_DIRS:
+        d = REPO_ROOT / rel
+        if not d.is_dir():
+            continue  # dir not created yet — coverage grows as dirs appear
+        if not (d / "CLAUDE.md").is_file():
+            has_readme = (d / "README.md").is_file()
+            hint = " (has a README — rename it to CLAUDE.md)" if has_readme else ""
+            failures.append(f"{rel}/ is missing CLAUDE.md{hint}")
+    assert not failures, (
+        "Control directories without a CLAUDE.md map:\n" + "\n".join(failures)
+    )
 
 
 # ---------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 # Architecture Decision Records (placeholder)
 
-> Rename to `docs/decisions/CLAUDE.md` (or keep a README) in the target repo.
+> Installs as `docs/decisions/CLAUDE.md`. Keep it a `CLAUDE.md`, not a README.
 > Use `ADR-template.md` (in this folder) for each new record.
 
 This directory records significant decisions that should survive beyond the

@@ -32,15 +32,17 @@ spelled out — read it to know what landed where and what you must edit.
 |       |-- test_doc_contradictions.py # Tier 2 starter
 |       `-- test_ownership_gate.py     # Tier 3 unit tests (PORT fixtures if you edit scopes)
 `-- docs/
+    |-- CLAUDE.md                      # placeholder map of docs/
     |-- PRINCIPLES.md                  # from kit — EDIT/replace section 2
     |-- SPEC.md                        # generated stub — EDIT
     |-- WORKFLOW.md                    # from kit
     |-- design_doc_sync.md             # from kit
-    |-- changelog/README.md            # placeholder
-    |-- decisions/README.md            # placeholder + ADR-template.md
-    |-- in_process/README.md           # placeholder + priority.md + change_log_draft.md
-    |-- audit/README.md                # placeholder
+    |-- changelog/CLAUDE.md            # placeholder map
+    |-- decisions/CLAUDE.md            # placeholder map + ADR-template.md
+    |-- in_process/CLAUDE.md           # placeholder map + priority.md + change_log_draft.md
+    |-- audit/CLAUDE.md                # placeholder map
     `-- skill/
+        |-- CLAUDE.md                  # placeholder map
         |-- design_template.md         # from kit/templates/
         |-- in_process_plan_format.md  # from kit/templates/
         `-- document_maintenance.md    # from kit/templates/
@@ -58,6 +60,7 @@ With `--with-ci`, `templates/ci.example.yml` also installs as
 | `docs/PRINCIPLES.md` | Replace §2 with your domain principle, or delete it and keep Decoupling only. |
 | `scripts/check_docs_sync.py` | `CODE_SCOPES` = your code roots; `CODE_EXEMPT_PREFIXES` = generated/vendored trees *under* those roots. |
 | `tests/docs/test_ownership_gate.py` | Only if you changed the constants above: mirror them in the fixtures marked `PORT`. |
+| `tests/docs/test_doc_consistency.py` | Add your code roots to `REQUIRED_CLAUDE_DIRS` (marked `PORT`) so the coverage test requires a `CLAUDE.md` map in each. |
 | `.github/workflows/ci.yml` | Only if installed: adapt Python version / dependency install to your stack. |
 
 Everything else is copy-as-is and domain-neutral.

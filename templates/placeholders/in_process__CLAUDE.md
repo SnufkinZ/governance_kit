@@ -1,6 +1,6 @@
 # In-Process Docs (placeholder)
 
-> Rename to `docs/in_process/CLAUDE.md` (or keep a README) in the target repo.
+> Installs as `docs/in_process/CLAUDE.md`. Keep it a `CLAUDE.md`, not a README.
 > Two companion files install alongside this one (shipped in this folder as
 > `in_process__priority.md` and `in_process__change_log_draft.md`):
 > `priority.md` — the priority board — and `change_log_draft.md` — the

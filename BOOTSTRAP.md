@@ -87,23 +87,30 @@ This realizes A2: stand up the skeleton so the loop is visible even when empty.
    `CLAUDE.md`, and the skeleton below:
    ```
    docs/
+   |-- CLAUDE.md              # placeholder map of docs/
    |-- PRINCIPLES.md          # EDIT: replace the second principle for your domain
    |-- SPEC.md                # EDIT: 1 paragraph — what this project is
    |-- WORKFLOW.md
    |-- design_doc_sync.md
-   |-- changelog/             # placeholder README — "change history lives here"
-   |-- decisions/             # placeholder README + ADR template — "rejected/major choices"
-   |-- in_process/            # placeholder README + priority.md + change_log_draft.md
-   |-- audit/                 # placeholder README — "semantic-drift audit reports"
-   `-- skill/                 # the authoring templates
+   |-- changelog/CLAUDE.md    # placeholder map — "change history lives here"
+   |-- decisions/CLAUDE.md    # placeholder map + ADR template — "rejected/major choices"
+   |-- in_process/CLAUDE.md   # placeholder map + priority.md + change_log_draft.md
+   |-- audit/CLAUDE.md        # placeholder map — "semantic-drift audit reports"
+   `-- skill/CLAUDE.md        # placeholder map + the authoring templates
    ```
    Empty is fine. The **placeholder text is the point** — it teaches the AI the
-   slot's purpose before there is content.
+   slot's purpose before there is content. Every directory's map is a
+   `CLAUDE.md` (the file the AI auto-loads), never a README — a Tier 1 test
+   pins that each control directory carries one.
 
 2. **Edit the placeholders** the installer names: root `CLAUDE.md` (project
    context + repo tree), `docs/SPEC.md`, `PRINCIPLES.md` §2, and the two PORT
    constants in `scripts/check_docs_sync.py`. Add a per-directory `CLAUDE.md`
-   to each code directory as it appears (file tree + point-of-use rules).
+   to each code directory as it appears: an annotated file tree (one line per
+   entry saying what it is) plus point-of-use rules *only if that directory
+   needs them* — most maps are orientation-only. Add each new code root to
+   `REQUIRED_CLAUDE_DIRS` in `tests/docs/test_doc_consistency.py` so the
+   coverage test guards it.
 
 3. **Author the first design doc** for the first module *before its code*, using
    `docs/skill/design_template.md`. Add its `> **Code:**` line.

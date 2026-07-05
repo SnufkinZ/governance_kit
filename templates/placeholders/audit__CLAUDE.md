@@ -1,6 +1,6 @@
 # Audit reports (placeholder)
 
-> Rename to `docs/audit/CLAUDE.md` (or keep a README) in the target repo.
+> Installs as `docs/audit/CLAUDE.md`. Keep it a `CLAUDE.md`, not a README.
 
 **Semantic-drift audit reports live here** (Tier 4 — `design_doc_sync.md` §5).
 
