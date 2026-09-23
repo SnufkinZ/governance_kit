@@ -15,8 +15,9 @@ kit restores a cheaper form of trust with a **layered control loop**:
 - **Mechanical checks** detect drift before it compounds, so the human verifies
   *on signal, not on schedule*.
 
-Concretely: every design doc declares the code it owns; a CI gate fails any
-change that touches owned code without touching its doc; pytest checks keep
+Concretely: every design doc declares the code it owns; a gate in an
+independent Docs workflow flags any committed change that touches owned code
+without touching its doc; pytest checks keep
 file trees, links, statuses, and versions from contradicting each other; and a
 model-run audit periodically reads code and prose side by side to catch what
 regex cannot.
@@ -41,6 +42,8 @@ pytest tests/docs/                              # Tiers 1-2 + gate unit tests, g
 
 Prefer manual installation, or want to know exactly what lands where? Read
 `MIGRATION.md` — the installer is just that file automated.
+For an existing installation, follow `MIGRATION.md` §6: re-running the
+installer fills missing files but does not upgrade existing rules or scripts.
 
 ## How you then build (the day-to-day loop)
 
@@ -51,13 +54,20 @@ Prefer manual installation, or want to know exactly what lands where? Read
    drafts the L2 contract from `docs/skill/design_template.md`, including its
    `> **Code:**` ownership line; the human approves. *Only then* is code
    written — design before code is axiom A1, never relaxed.
-3. **While coding**, raw facts go to `docs/in_process/change_log_draft.md`
-   (an inbox); active plans live in `docs/in_process/` and on the priority
-   board. After coding, the AI folds the inbox into the design docs +
-   `docs/changelog/` in one pass (`docs/skill/document_maintenance.md`).
+3. **While coding, the docs stay untouched** — the uncommitted diff is the
+   record, and the gate lists owed docs as **DOCS OWED** without failing.
+   Only the *why* and deliberate open questions go into the owning
+   `docs/in_process/` plan (or an ADR). When the change is final and the
+   human gives the command, the AI updates the design docs + one
+   `docs/changelog/` entry in a single pass
+   (`docs/skill/document_maintenance.md`). Changes that neither add, remove,
+   nor change a documented contract (API behavior, state semantics,
+   persistence compatibility, or architecture) skip L2/L3
+   and carry a `docs-sync: not-needed` trailer instead.
 4. **Before pushing:** `python scripts/check_docs_sync.py` — if owned code
    changed without its doc, the gate names the doc to update (or you record a
-   `docs-sync: not-needed` trailer explaining why).
+   `docs-sync: not-needed` trailer on that commit explaining why — it covers
+   that commit's files only).
 5. **At milestones:** run the `/doc-audit` skill (installed at
    `.claude/skills/doc-audit/`) for the semantic drift machines can't see, and
    `python scripts/check_bootstrap_phase.py` to see whether the project is
@@ -77,7 +87,8 @@ The full contract is `WORKFLOW.md`; the machinery spec is `design_doc_sync.md`.
 | `scripts/check_docs_sync.py` | **Tier 3 gate.** Builds a `code → owning-doc` map from `> **Code:**` lines and fails a diff whose owned code changed without its doc. | Yes — edit two PORT constants |
 | `scripts/check_bootstrap_phase.py` | Scores the machine-checkable Phase 0 → 1 graduation signals. | Yes |
 | `tests_docs/` | **Tiers 1–2 starter tests + Tier 3 unit tests.** Green in a fresh install; start biting as conventions are used. See `tests_docs/README.md`. | Yes — one PORT-marked fixture block |
-| `templates/` | Authoring skills (design contract, in-process plan, document maintenance), the Tier 4 `/doc-audit` skill, root `CLAUDE.md` + `AGENTS.md` starters (the latter points non-Claude agents at the former), the CI example, and the placeholder files the boot phase drops in. | Yes |
+| `templates/` | Authoring skills (design contract, in-process plan, document maintenance), the Tier 4 `/doc-audit` skill, root `CLAUDE.md` + `AGENTS.md` starters (the latter points non-Claude agents at the former), the Docs workflow example, and the placeholder files the boot phase drops in. | Yes |
+| `tests/` | Kit-author installation regressions: fresh installs, repeat installs, and initial-push CI handling. Run `python -m pytest governance-kit/tests/` from the host repo (or `python -m pytest tests/` from the standalone kit). Requires pytest, PyYAML, Git, and Bash; these tests are not installed into target projects. | No |
 | `MIGRATION.md` | The full file-by-file install map: what goes where, what to edit, in what order. | Yes |
 
 ## The one idea to keep straight

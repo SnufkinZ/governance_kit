@@ -11,8 +11,9 @@ Behavior:
 - NEVER overwrites an existing file (idempotent; re-running reports skips).
 - Creates the docs/ skeleton, tests/docs/__init__.py, and a stub docs/SPEC.md.
 - Stamps today's date into docs/in_process/priority.md's snapshot line.
-- With --with-ci, also installs templates/ci.example.yml as
-  .github/workflows/ci.yml (skipped if one already exists).
+- With --with-ci, also installs templates/docs.example.yml as
+  .github/workflows/docs.yml — the independent Docs workflow (skipped if one
+  already exists). Runtime CI stays yours; it should not run tests/docs/.
 
 After installing you still have to EDIT (the installer reminds you):
 - CLAUDE.md and docs/SPEC.md (replace every <placeholder>),
@@ -43,7 +44,6 @@ FILE_MAP: list[tuple[str, str]] = [
     ("tests_docs/test_ownership_gate.py", "tests/docs/test_ownership_gate.py"),
     ("tests_docs/test_doc_consistency.py", "tests/docs/test_doc_consistency.py"),
     ("tests_docs/test_doc_contradictions.py", "tests/docs/test_doc_contradictions.py"),
-    ("tests_docs/test_change_log_draft.py", "tests/docs/test_change_log_draft.py"),
     ("tests_docs/README.md", "tests/docs/README.md"),
     ("templates/placeholders/docs__CLAUDE.md", "docs/CLAUDE.md"),
     ("templates/placeholders/skill__CLAUDE.md", "docs/skill/CLAUDE.md"),
@@ -58,12 +58,10 @@ FILE_MAP: list[tuple[str, str]] = [
     ("templates/placeholders/ADR-template.md", "docs/decisions/ADR-template.md"),
     ("templates/placeholders/in_process__CLAUDE.md", "docs/in_process/CLAUDE.md"),
     ("templates/placeholders/in_process__priority.md", "docs/in_process/priority.md"),
-    ("templates/placeholders/in_process__change_log_draft.md",
-     "docs/in_process/change_log_draft.md"),
     ("templates/placeholders/audit__CLAUDE.md", "docs/audit/CLAUDE.md"),
 ]
 
-CI_MAP = ("templates/ci.example.yml", ".github/workflows/ci.yml")
+CI_MAP = ("templates/docs.example.yml", ".github/workflows/docs.yml")
 
 SPEC_STUB = """# SPEC
 
@@ -85,7 +83,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("target", help="root of the repo to install into")
     parser.add_argument("--with-ci", action="store_true",
-                        help="also install .github/workflows/ci.yml")
+                        help="also install the Docs workflow "
+                             "(.github/workflows/docs.yml)")
     parser.add_argument("--force", action="store_true",
                         help="allow installing into the repo that hosts the kit")
     args = parser.parse_args()
@@ -144,9 +143,15 @@ def main() -> int:
         print(f"  skipped (already exist): {len(skipped)}")
         for f in skipped:
             print(f"    = {f}")
+        print("  Existing files were preserved, not upgraded. Follow the kit's "
+              "MIGRATION.md section 6 to merge updates and retire obsolete files; "
+              "preserve your current bootstrap phase.")
+    if args.with_ci and (target / ".github/workflows/ci.yml").exists():
+        print("  Review existing .github/workflows/ci.yml: remove only docs "
+              "jobs migrated to docs.yml; preserve runtime CI (MIGRATION.md section 6).")
     if not args.with_ci:
-        print("  (CI workflow not installed; re-run with --with-ci, or wire "
-              "templates/ci.example.yml by hand)")
+        print("  (Docs workflow not installed; re-run with --with-ci, or wire "
+              "templates/docs.example.yml by hand)")
 
     print("""
 Next steps (BOOTSTRAP.md section 2):

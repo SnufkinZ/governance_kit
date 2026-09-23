@@ -20,8 +20,13 @@ docs/
 |-- decisions/           # ADRs — what was considered and why (accepted/rejected)
 |-- in_process/          # active plans not yet stable enough to be a design_*.md
 |-- audit/               # semantic-drift audit reports (Tier 4)
-|-- skill/               # authoring skills — how to write a design doc, a plan, keep docs synced
-`-- ...                  # design_*.md and domain subtrees land here as they are written
+`-- skill/               # authoring skills — how to write a design doc, a plan, keep docs synced
+...
 ```
+
+The bare `...` line opts this tree out of the completeness check: `design_*.md`
+files and domain subtrees land here as they are written. Optional later slots:
+`architecture/mechanism_*.md` (the L2 theory plane, `design_doc_sync.md` §7.1)
+and `reference/` (imported foreign docs, outside the control system).
 
 Each subdirectory carries its own `CLAUDE.md` explaining its slot.

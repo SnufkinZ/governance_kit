@@ -1,10 +1,8 @@
 # In-Process Docs (placeholder)
 
 > Installs as `docs/in_process/CLAUDE.md`. Keep it a `CLAUDE.md`, not a README.
-> Two companion files install alongside this one (shipped in this folder as
-> `in_process__priority.md` and `in_process__change_log_draft.md`):
-> `priority.md` — the priority board — and `change_log_draft.md` — the
-> draft-log inbox.
+> One companion file installs alongside this one (shipped in this folder as
+> `in_process__priority.md`): `priority.md` — the priority board.
 
 This directory holds **active planning documents** — things being decided,
 designed, or implemented but not yet stable enough to live in a `design_*.md`.
@@ -19,8 +17,10 @@ contract (the design doc is authoritative).
 - **How to write a plan doc:** `../skill/in_process_plan_format.md` — standard
   head (`Type/Status/Priority/Date/Owner`) + append-only `## Track` section
   (Tier 1 enforces this).
-- **Raw facts while coding:** `change_log_draft.md` — an inbox, not a journal;
-  its header comment carries the contract (Tier 1 enforces this).
+- **While coding, no doc journal:** the uncommitted diff is the record of *what*
+  changed. Only the *why* and what was deliberately left open go into the
+  owning plan doc (or an ADR); design docs are written once, at the end, on
+  command (`../skill/document_maintenance.md`).
 
 Empty for now — present from day one so the AI separates *plans* from
 *contracts* from *history* from the start (BOOTSTRAP.md axiom A2).

@@ -28,12 +28,17 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 DOCS = REPO_ROOT / "docs"
 IN_PROCESS = DOCS / "in_process"
 
+# Imported external reference docs (docs/reference/) are intentionally outside
+# the local doc-sync control system: their maps and links describe another repo.
+# Keep in step with DOC_CONTROL_EXCLUDE in scripts/check_docs_sync.py.
+DOC_CONTROL_EXCLUDE = {"reference"}
+
 # Directories never walked for CLAUDE.md discovery or completeness checks.
 # PORT: add your generated/vendored roots.
 PRUNE_DIRS = {
     ".git", ".venv", "venv", ".vscode", ".claude", ".github", ".idea",
     ".pytest_cache", "node_modules", "__pycache__", ".next", "dist", "build",
-    "target", "governance-kit",
+    "target", "governance-kit", *DOC_CONTROL_EXCLUDE,
 }
 
 # Names a CLAUDE.md tree may list but is never *required* to list.
@@ -224,8 +229,9 @@ def test_control_dirs_have_claude_md():
 # 2. Markdown links resolve
 # ---------------------------------------------------------------------------
 
-# Frozen history may link at since-moved files.
-LINK_CHECK_EXCLUDE = {"archive"}
+# Frozen history and imported reference material may link at since-moved files
+# or at another repo's layout.
+LINK_CHECK_EXCLUDE = {"archive", *DOC_CONTROL_EXCLUDE}
 
 
 def test_docs_relative_links_resolve():
@@ -254,7 +260,7 @@ def test_docs_relative_links_resolve():
 
 PLAN_PREFIXES = ("plan_", "problem_", "change_", "feature_")
 HEAD_FIELDS = ("**Type:**", "**Status:**", "**Priority:**", "**Date:**", "**Owner:**")
-HEAD_EXEMPT = {"change_log_draft.md"}  # inbox, explicitly not a plan doc
+HEAD_EXEMPT: set[str] = set()  # PORT: in_process files that match a prefix but are not plans
 DATE_RE = re.compile(r"\*\*Date:\*\*\s*(\d{4}-\d{2}-\d{2})")
 
 

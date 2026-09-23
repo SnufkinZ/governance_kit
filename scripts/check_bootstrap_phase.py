@@ -105,7 +105,7 @@ def main() -> int:
     ready = bool(a and tests_ok and gate_ok and c and not missing_skel)
     print()
     if ready:
-        print("  => Phase 0 signals MET (confirm tests/docs/ is also green in CI). "
+        print("  => Phase 0 signals MET (confirm the Docs workflow is also green). "
               "Do the tightening action: flip Tier 3 to blocking, delete R0.1 from "
               "BOOTSTRAP.md, set Current phase to 1.")
         return 0

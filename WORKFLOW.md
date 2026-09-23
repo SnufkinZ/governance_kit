@@ -48,14 +48,26 @@ collaboration therefore runs on **three layers**:
 | Layer | Artifact | Primary reader | Purpose |
 |---|---|---|---|
 | **L1 — Code** | `src/`, `backend/`, … | AI | Executable truth. Guarded by types, tests, and decoupling so local error cannot spread. |
-| **L2 — Design docs** | `docs/**/design_*.md`, ADRs | AI + rigor | The architecture **contract**. Every code region traces to it; it governs AI development, semantic audit, change control. Precise, not easy. |
+| **L2 — Architecture contract** | `docs/**/design_*.md`, optional `docs/architecture/mechanism_*.md`, ADRs | AI + rigor | The architecture **contract**. Every code region traces to it; it governs AI development, semantic audit, change control. Precise, not easy. |
 | **L3 — Human-intuition layer** | a docs site (optional) | **Human** | Translates L2 into human **intuition** — a patient retelling where the human builds understanding and forms the next instruction. |
 
+**L2 may run on two planes.** `design_*.md` holds the engineering contract; an
+optional `architecture/mechanism_*.md` holds the durable theory and invariants
+that contract implements — what stays true when the implementation is replaced.
+Both are full L2 authority, neither outranks the other; they are kept apart so
+theory does not bloat the contract and code churn does not drag the theory.
+**A mechanism companion is optional and rare** — most design docs never have one
+and are complete without one (`design_doc_sync.md` §7.1).
+
 L3 is a **faithful retelling, never a second source of truth.** On any conflict,
-the L2 doc wins and the L3 page is the defect. L3's risk is the same drift
-problem moved up one edge — an L3 page can silently rot as its L2 doc moves — so
-the L2↔L3 edge is pinned mechanically (each L3 page records the L2 version/hash
-it aligned to; a test fails when the source advances past the pin). **L3 is
+the L2 source wins and the L3 page is the defect. L3 gains no legislative power
+from being read first: its depth must come from explaining L2, never from theory
+or architectural judgement that exists nowhere else. Where a mechanism doc
+exists, a page retelling its contract must retell the theory too. L3's risk is
+the same drift problem moved up one edge — an L3 page can silently rot as its L2
+source moves — so the L2↔L3 edge is pinned mechanically (each L3 page records
+the content hash of each L2 source it aligned to; a test fails when a source
+advances past its pin, `design_doc_sync.md` §3.1). **L3 is
 deferred until a human actually needs it** — see `BOOTSTRAP.md` R0.2; building it
 too early is pure cost with no reader.
 
@@ -113,12 +125,18 @@ low-leverage and trains a dependency the workflow is designed to eliminate.
 1. Discussion       — human and AI align on intent
 2. Design doc       — AI drafts the L2 contract using docs/skill/design_template.md
 3. Review           — human reviews, iterates, approves
-4. Implementation   — AI writes code and tests
-5. Doc sync         — AI updates docs/ + docs/changelog/ + local CLAUDE.md + decisions/ if needed
+4. Implementation   — AI writes code and tests, iterating as often as needed;
+                      design docs stay untouched while the change is moving
+5. Doc sync         — once the change is final, on the human's command: AI updates
+                      docs/ + one docs/changelog/ entry + local CLAUDE.md + decisions/
+                      if needed, in a single pass
 6. Doc review       — human reviews the doc diff, briefly scans the code diff for alignment
 7. Testing          — human runs the new behavior and verifies it
 ```
-(A1 in `BOOTSTRAP.md`: steps 1–3 precede step 4 always. Design before code.)
+(A1 in `BOOTSTRAP.md`: steps 1–3 precede step 4 always. Design before code.
+Writing the approved design first and syncing it once at the end are not in
+tension: step 2 fixes the intent, step 5 records the landed contract —
+`docs/skill/document_maintenance.md`.)
 
 ### 4.2 Bug fix
 ```
@@ -126,7 +144,9 @@ low-leverage and trains a dependency the workflow is designed to eliminate.
 2. Locate           — AI finds the root cause and explains
 3. Propose          — AI proposes a fix
 4. Classify         — does the fix touch design?  No -> 5;  Yes -> fall back to 4.1
-5. Implement + sync — AI fixes and updates any affected docs
+5. Implement + sync — AI fixes; a fix that neither adds, removes, nor changes a
+                      documented contract leaves L2/L3 untouched and carries a
+                      `docs-sync: not-needed` trailer with the reason instead
 ```
 
 ### 4.3 Refactor
@@ -161,7 +181,7 @@ just-in-time property that makes the structure work.
 | Local rules | `*/CLAUDE.md` per directory | When AI works in that directory |
 | System principles | `PRINCIPLES.md` | When designing or reviewing architecture |
 | System spec | `SPEC.md` | When intent or scope is in question |
-| Module designs (L2) | `docs/**/design_*.md` | When working on that module |
+| Module designs (L2) | `docs/**/design_*.md` (+ its `mechanism_*.md` companion, if any) | When working on that module |
 | Human-intuition (L3) | docs site | When a human needs to understand/test a system |
 | Process meta | `WORKFLOW.md` (this file) | Onboarding; designing the workflow itself |
 | Boot ladder | `BOOTSTRAP.md` | Every session until the project reaches maturity |

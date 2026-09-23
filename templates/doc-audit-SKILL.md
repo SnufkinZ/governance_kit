@@ -9,7 +9,7 @@ description: Tier-4 semantic doc-code drift audit. Run at sprint milestones (not
 > you use a different agent harness, treat this file as the audit runbook and
 > wire it into whatever skill/prompt mechanism that harness has.
 
-This is the judgement layer of the doc-code sync system (`docs/design_doc_sync.md` §5). Tiers 1–3 run in CI and catch mechanical desync (missing files, broken links, a board that contradicts a Status, code changed without its doc touched). They **cannot** read meaning, so they miss the most dangerous failure: a design doc that is structurally perfect and internally consistent but **describes a mechanism the code no longer implements** (canonical shape: an auth doc still describing the old token scheme long after the implementation switched).
+This is the judgement layer of the doc-code sync system (`docs/design_doc_sync.md` §5). Tiers 1–3 run in the Docs workflow and catch mechanical desync (missing files, broken links, a board that contradicts a Status, code changed without its doc touched). They **cannot** read meaning, so they miss the most dangerous failure: a design doc that is structurally perfect and internally consistent but **describes a mechanism the code no longer implements** (canonical shape: an auth doc still describing the old token scheme long after the implementation switched).
 
 Your job is to read code and its owning design doc together and report where the prose has drifted from the implementation.
 

@@ -1,4 +1,4 @@
-# tests_docs — the mechanical checks (Tiers 1–3 unit tests)
+# tests_docs — the mechanical checks (Tiers 1–3)
 
 These files install as `tests/docs/` in the target repo (the installer also
 creates the required empty `__init__.py`). Together with
@@ -8,9 +8,8 @@ system — see `design_doc_sync.md` for what each tier means.
 | File | Tier | What it pins |
 |---|---|---|
 | `test_doc_consistency.py` | 1 | CLAUDE.md file trees match disk; every control directory in `REQUIRED_CLAUDE_DIRS` carries a CLAUDE.md (not a README); relative links under `docs/` resolve; in_process docs carry the standard head + Track section; every plan is on the priority board. |
-| `test_change_log_draft.py` | 1 | The draft log obeys its inbox contract (dated batches, `Docs:` lines, consume = delete, size cap). |
 | `test_doc_contradictions.py` | 2 | A doc's own Status vs the board; board snapshot freshness; `**Version:**` header vs changelog entry. |
-| `test_ownership_gate.py` | 3 | The gate's pure functions: glob semantics (`*` does not cross `/`, `**` does), scope rules, bypass-trailer matching. |
+| `test_ownership_gate.py` | 3 | Glob/scope/trailer semantics and real-map invariants (foreign docs own nothing; path-shaped claims match files). Temporary Git histories exercise DOCS OWED, committed violations, scoped waivers, clean merges, and additional merge edits. Requires Git; does not change the target repo's history. |
 
 ## Portability
 
@@ -20,11 +19,13 @@ system — see `design_doc_sync.md` for what each tier means.
   design.
 - All checks are **vacuously green in a fresh install** and start biting as
   soon as the convention they guard is first used (first plan doc, first
-  versioned design doc, first draft-log batch).
+  versioned design doc, first `> **Code:**` line).
 - The only fixtures tied to porting constants are marked `PORT` in
   `test_ownership_gate.py` — if you edit `CODE_SCOPES` /
   `CODE_EXEMPT_PREFIXES` in `scripts/check_docs_sync.py`, mirror the edit
-  there. Everything else is layout-neutral.
+  there. `DOC_CONTROL_EXCLUDE` (docs/ subtrees holding imported foreign docs,
+  default `reference`) appears in the gate and in both doc-test modules — keep
+  the copies in step. Everything else is layout-neutral.
 
 ## Extending (this is expected, not exceptional)
 

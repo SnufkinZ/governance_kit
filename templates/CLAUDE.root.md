@@ -33,9 +33,14 @@ codename if they differ.>
    either the code direction or the doc.
 4. **Check for existing logic before adding new.** Search the codebase for
    similar functions/mechanisms first; do not add new logic unless necessary.
-5. **Docs stay in sync with code.** Read `docs/skill/document_maintenance.md`
-   before coding. Update the owning design doc in the same change; the gate
-   (`python scripts/check_docs_sync.py`) enforces this.
+5. **Docs stay in sync with code — written once, at the end, on command.**
+   Read `docs/skill/document_maintenance.md` before coding. While work is in
+   progress do not edit design docs, changelogs, or version headers, whatever
+   the gate reports (it lists uncommitted debt as DOCS OWED). A change that
+   neither adds, removes, nor changes a documented contract (API behavior,
+   state semantics, persistence compatibility, or architecture) must not touch
+   L2/L3 docs; give its commit a `docs-sync: not-needed` trailer instead. The gate
+   (`python scripts/check_docs_sync.py`) enforces the rest.
 6. **Evaluate every design proposal against `docs/PRINCIPLES.md`.** If a
    proposal violates a principle, redesign before implementing.
 7. **Keep every `CLAUDE.md` lean.** It loads into every session. When editing
