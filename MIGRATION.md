@@ -152,7 +152,13 @@ kit's host repo; it does **not** enable overwriting.
    to Phase 1: do not reintroduce the example's `--warn-only`. Review required
    PR check names because the jobs have changed. Adapt the Python/default-branch
    settings and confirm that the Docs jobs run on a real PR in the target repo.
-6. **Validate the merged installation.** Run `pytest tests/docs/` and
+6. **Add workboard only if needed.** Re-run with `--with-workboard` and apply
+   the printed pointer lines to existing maps (§7). Preserve existing live
+   cards and boards. Instantiate one task card and receipt to check links in
+   their mailbox locations as well as in the template directory. In a mature
+   repo, install just the module's mapped files manually if re-running the
+   full installer would recreate retired bootstrap files.
+7. **Validate the merged installation.** Run `pytest tests/docs/` and
    `python scripts/check_docs_sync.py --base <pre-upgrade-commit>`; inspect
    DOCS OWED before committing and repeat against the same base after the
    upgrade is committed. For projects still in bootstrap, run the phase
@@ -160,3 +166,29 @@ kit's host repo; it does **not** enable overwriting.
    diff for preserved local settings, retired inbox references, and duplicate
    CI jobs. A passing local suite verifies the files; the actual Docs workflow
    run verifies GitHub event/base handling and runner setup.
+
+## 7. Optional module — parallel workboard
+
+Install with `--with-workboard` only if several agents, windows, or vendors will
+work in the same repository at once. It adds:
+
+```
+docs/
+|-- skill/parallel_workboard.md              # the protocol (levels L0–L3, Integrator, authority rules)
+`-- in_process/
+    |-- WORKBOARD.md                         # global runtime board — starts idle
+    `-- workboard/
+        |-- CLAUDE.md                        # map of the runtime directory
+        |-- tasks/CLAUDE.md                  # card mailbox
+        |-- receipts/CLAUDE.md               # completion mailbox
+        |-- notices/CLAUDE.md                # coordination-event mailbox
+        `-- templates/                       # task_card.md, task_receipt.md, coordination_notice.md
+```
+
+When the core maps are installed in the same run, the installer also adds the
+module's pointer lines to `docs/skill/CLAUDE.md` (its tree must list every file,
+Tier 1) and `docs/in_process/CLAUDE.md`. If those maps already existed, it
+prints the lines for you to add by hand instead of editing your files. The
+protocol carries no domain authority and is fully reversible: archive any
+needed runtime records, then remove the board, the `workboard/` directory,
+`docs/skill/parallel_workboard.md`, and the two pointer lines.

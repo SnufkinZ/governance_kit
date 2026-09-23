@@ -88,7 +88,8 @@ The full contract is `WORKFLOW.md`; the machinery spec is `design_doc_sync.md`.
 | `scripts/check_bootstrap_phase.py` | Scores the machine-checkable Phase 0 → 1 graduation signals. | Yes |
 | `tests_docs/` | **Tiers 1–2 starter tests + Tier 3 unit tests.** Green in a fresh install; start biting as conventions are used. See `tests_docs/README.md`. | Yes — one PORT-marked fixture block |
 | `templates/` | Authoring skills (design contract, in-process plan, document maintenance), the Tier 4 `/doc-audit` skill, root `CLAUDE.md` + `AGENTS.md` starters (the latter points non-Claude agents at the former), the Docs workflow example, and the placeholder files the boot phase drops in. | Yes |
-| `tests/` | Kit-author installation regressions: fresh installs, repeat installs, and initial-push CI handling. Run `python -m pytest governance-kit/tests/` from the host repo (or `python -m pytest tests/` from the standalone kit). Requires pytest, PyYAML, Git, and Bash; these tests are not installed into target projects. | No |
+| `modules/workboard/` | **Optional** (`install.py --with-workboard`): the parallel-workboard protocol for several agents/windows/vendors sharing one repo — activation levels L0–L3, a temporary Integrator, task cards, receipts, notices, and explicit dispatch/commit authority. Skip it if you never run agents in parallel. | Yes |
+| `tests/` | Kit-author installation regressions: fresh installs with/without workboard, template instances, repeat installs, existing-map preservation, and initial-push CI handling. Run `python -m pytest governance-kit/tests/` from the host repo (or `python -m pytest tests/` from the standalone kit). Requires pytest, PyYAML, Git, and Bash; these tests are not installed into target projects. | No |
 | `MIGRATION.md` | The full file-by-file install map: what goes where, what to edit, in what order. | Yes |
 
 ## The one idea to keep straight
