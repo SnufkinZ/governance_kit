@@ -33,6 +33,7 @@ CHANGELOG = DOCS / "changelog"
 PRIORITY = IN_PROCESS / "priority.md"
 
 SNAPSHOT_MAX_LAG_DAYS = 14  # board refresh cadence; tune to your sprint length
+DOC_CONTROL_EXCLUDE = {"reference"}  # imported external docs; see test_doc_consistency.py
 
 # Anchored: the Status *opens* with a terminal word ("Implemented — ...").
 # Phase-partial statuses ("Phase 1 implemented; Phase 2 deferred") and
@@ -236,8 +237,10 @@ def test_design_doc_version_appears_in_changelog():
     failures = []
     for doc in sorted(DOCS.rglob("design_*.md")):
         # archive/ is frozen history; skill/ holds authoring templates with
-        # placeholder heads; changelog/ files are histories, not design docs.
-        if {"archive", "skill"} & set(doc.parts) or CHANGELOG in doc.parents:
+        # placeholder heads; reference/ is imported external material;
+        # changelog/ files are histories, not design docs.
+        excluded = {"archive", "skill", *DOC_CONTROL_EXCLUDE}
+        if excluded & set(doc.relative_to(DOCS).parts) or CHANGELOG in doc.parents:
             continue
         m = VERSION_LINE.search(doc.read_text(encoding="utf-8"))
         if not m:

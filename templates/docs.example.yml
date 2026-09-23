@@ -1,0 +1,61 @@
+# Example Docs workflow for the governance kit.
+# Installs as .github/workflows/docs.yml (install.py --with-ci), or copy by hand.
+#
+# Documentation health is reported by its own workflow, independent of the
+# runtime CI that builds, tests and deploys the product. A red Docs run is
+# visible and actionable. Build/image/deploy workflows do not depend on Docs.
+# Making Docs a required PR check can still block merging and thus indirectly
+# delay a release; choose that branch policy deliberately. Keep runtime tests
+# from running
+# tests/docs/ (e.g. `pytest tests/ --ignore=tests/docs`) so the two stay apart.
+
+name: Docs
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  mechanical:
+    name: documentation structure and consistency (Tiers 1-2)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pytest pyyaml
+      - run: pytest tests/docs/                   # Tiers 1-2 + ownership-gate unit tests
+
+  ownership:
+    name: design-doc ownership (Tier 3)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0            # full history so the base ref is diffable
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check changed code against design-doc owners
+        run: |
+          # PR: diff against the PR base; push: against the previous tip.
+          BASE="${{ github.event.pull_request.base.sha || github.event.before }}"
+          # A newly created branch has an all-zero "before", not a Git commit.
+          # There is no prior tip to compare; mechanical checks still run.
+          if [[ "$BASE" =~ ^0+$ ]]; then
+            echo "Initial branch push: no previous tip for the ownership comparison."
+            exit 0
+          fi
+          # PHASE 0: keep --warn-only. Remove it at Phase 0->1 graduation
+          # (BOOTSTRAP.md R0.1) so a violation turns this workflow red.
+          python scripts/check_docs_sync.py --base "${BASE:-origin/main}" --warn-only

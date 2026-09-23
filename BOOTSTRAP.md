@@ -94,7 +94,7 @@ This realizes A2: stand up the skeleton so the loop is visible even when empty.
    |-- design_doc_sync.md
    |-- changelog/CLAUDE.md    # placeholder map — "change history lives here"
    |-- decisions/CLAUDE.md    # placeholder map + ADR template — "rejected/major choices"
-   |-- in_process/CLAUDE.md   # placeholder map + priority.md + change_log_draft.md
+   |-- in_process/CLAUDE.md   # placeholder map + priority.md
    |-- audit/CLAUDE.md        # placeholder map — "semantic-drift audit reports"
    `-- skill/CLAUDE.md        # placeholder map + the authoring templates
    ```
@@ -115,10 +115,11 @@ This realizes A2: stand up the skeleton so the loop is visible even when empty.
 3. **Author the first design doc** for the first module *before its code*, using
    `docs/skill/design_template.md`. Add its `> **Code:**` line.
 
-4. **Wire minimal CI** (`--with-ci` at install time, or copy
-   `templates/ci.example.yml` by hand): run `pytest tests/docs/` (Tiers 1–2)
-   and `python scripts/check_docs_sync.py --warn-only` (Tier 3 in report-only
-   mode — see Phase 0).
+4. **Wire the Docs workflow** (`--with-ci` at install time, or copy
+   `templates/docs.example.yml` by hand): an independent workflow that runs
+   `pytest tests/docs/` (Tiers 1–2) and `python scripts/check_docs_sync.py
+   --warn-only` (Tier 3 in report-only mode — see Phase 0). It stays separate
+   from runtime CI: build/deploy workflows do not depend on the Docs result.
 
 ---
 
@@ -150,7 +151,10 @@ Each phase = a set of relaxations + a graduation condition + the tightening acti
   green in CI), (c) the R0.1 clause above records at least one
   would-have-blocked event (proof the gate is wired to real ownership).
 - **Tightening action (write it into the record):**
-  - Flip Tier 3 to **blocking** (drop `--warn-only` in CI). → removes R0.1.
+  - Flip Tier 3 to **blocking** (drop `--warn-only` in the Docs workflow, so
+    a violation turns it red; optionally make it a required PR check). It
+    is not a direct build/deploy dependency; a required PR check can still
+    prevent merging and indirectly delay a release. → removes R0.1.
   - Delete the R0.1 clause from this file.
   - Set the header's **Current phase** to `1 — Skeleton in place`.
 
@@ -188,8 +192,8 @@ Each phase = a set of relaxations + a graduation condition + the tightening acti
      design doc and plan), the `/doc-audit` skill (Tier 4 runs for the life of
      the project), `docs/decisions/ADR-template.md`, the placeholder READMEs
      (they graduate into real content as their directory fills — signage, not
-     scaffolding), `priority.md` and `change_log_draft.md` (live working
-     files), the gate, and `tests/docs/`. The immune system remains; its
+     scaffolding), `priority.md` (a live working file), the gate, and
+     `tests/docs/`. The immune system remains; its
      training wheels are gone.
 
 ---

@@ -55,10 +55,42 @@ Use this header for every code-owning L2 design doc:
 `> **Code:**` is machine-readable. It may contain only backticked code paths or
 globs. Do not put explanatory prose, markdown doc paths, bare terms, or
 non-code tokens on that line. Put ownership notes in a normal paragraph below
-the header.
+the header. Claim a package with a glob (`src/pkg/**`), never a bare directory
+(`src/pkg/`): a directory token owns zero files, so the gate reads green while
+governing nothing — `tests/docs/test_ownership_gate.py` fails on any
+path-shaped token that matches no live file.
 
 Pure cross-cutting rulebooks may omit `> **Code:**` when they do not own a code
 region directly.
+
+## The Other L2 Plane — Where Theory Goes
+
+A design doc owns the **contract**: names, shapes, formulas, phase order,
+status, deferred seats. Keep the reasons with it — a sentence or two beside a
+contract explaining why it is shaped that way is part of a good contract.
+
+**Most design docs stop there, and that is correct.** For a small class of
+foundational mechanisms, the *why* is not a few sentences but a body of theory
+that outlives any implementation and judges every future design touching it.
+That theory lives in a **mechanism architecture doc**
+(`docs/architecture/mechanism_*.md`), full L2 authority alongside this doc, not
+beneath it. Platform and adapter contracts are outside the class by nature.
+Writing one is optional and rare; your doc having none is not a gap. Rule:
+`docs/design_doc_sync.md` §7.1.
+
+When a companion exists (e.g. `mechanism_scheduling.md` ↔
+`design_scheduler.md`):
+
+- cite it in `> **Prerequisite:**` and link it near the top;
+- **do not restate its theory** — link instead; two copies drift, and the
+  mechanism doc wins on theory by definition;
+- the companion carries `> **Engineering Contract:**` pointing back here. Once
+  L3 exists, that line is machine-read to force every L3 page retelling this
+  contract to retell the theory too (`design_doc_sync.md` §3.1) — so the
+  back-link is not decoration.
+
+The split is one-way for code: a mechanism doc never carries `> **Code:**`, so
+refactors never drag the theory, and theory edits never trip the Tier 3 gate.
 
 ## Recommended Shape
 

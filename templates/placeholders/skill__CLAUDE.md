@@ -12,5 +12,5 @@ docs/skill/
 |-- CLAUDE.md                  # this map
 |-- design_template.md         # how to write a design_*.md (the L2 contract)
 |-- in_process_plan_format.md  # the plan-doc head + Track format the board expects
-`-- document_maintenance.md    # the draft-first doc-sync workflow (keep docs current while coding)
+`-- document_maintenance.md    # the doc-sync workflow: docs written once, at the end, on command
 ```
