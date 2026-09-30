@@ -10,6 +10,7 @@ system — see `design_doc_sync.md` for what each tier means.
 | `test_doc_consistency.py` | 1 | CLAUDE.md file trees match disk; every control directory in `REQUIRED_CLAUDE_DIRS` carries a CLAUDE.md (not a README); relative links under `docs/` resolve; in_process docs carry the standard head + Track section; every plan is on the priority board. |
 | `test_doc_contradictions.py` | 2 | A doc's own Status vs the board; board snapshot freshness; `**Version:**` header vs changelog entry. |
 | `test_ownership_gate.py` | 3 | Glob/scope/trailer semantics and real-map invariants (foreign docs own nothing; path-shaped claims match files). Temporary Git histories exercise DOCS OWED, committed violations, scoped waivers, clean merges, and additional merge edits. Requires Git; does not change the target repo's history. |
+| `test_l3_sources.py` *(optional, `--with-l3`)* | 2 | L3 pages' `l3_sources` hash pins match their live L2 sources; `l3_stale` declares debt; a pinned contract brings its mechanism companion. Shipped from `modules/l3/`, not from this folder. |
 
 ## Portability
 

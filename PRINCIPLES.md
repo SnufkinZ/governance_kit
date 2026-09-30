@@ -110,11 +110,11 @@ possible.
 
 ### 4.1 When proposing a new mechanism, ask in order
 
-1. What problem in the system creates pressure for this mechanism? (No regulatory
+1. What problem in the system creates pressure for this mechanism? (No real
    gap → maybe not needed.)
-2. Can the desired behavior emerge from existing dynamics? Try that first.
-3. If a hard mechanism is needed, what is its grounding? Without one, it is
-   probably an island.
+2. Can existing mechanisms already produce the desired behavior? Try that first.
+3. If a new mechanism is needed, what grounds it — which principle or
+   requirement? Without one, it is probably unjustified.
 4. What is the narrowest interface that lets it participate? Resist adding fields
    to shared structures.
 5. Who owns each new state variable? State without an owner is a future bug.

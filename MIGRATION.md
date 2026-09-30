@@ -5,6 +5,7 @@ The fast path is the installer:
 ```bash
 python governance-kit/scripts/install.py <new-repo-root>          # core install
 python governance-kit/scripts/install.py <new-repo-root> --with-ci # + Docs workflow
+# optional modules: --with-workboard (§7), --with-l3 (§8)
 ```
 
 It copies every file below to its target path, never overwrites anything that
@@ -83,8 +84,8 @@ freshness, Version vs changelog, and ownership claims that match real files.
 Growing beyond that is a normal Phase 0 → 1 activity: every new mechanical
 invariant becomes one more test in `tests/docs/` whose failure message names
 the exact file and fix (`tests_docs/README.md` has the pattern). The L2↔L3
-freshness pin test is deliberately *not* shipped — build it when L3 exists
-(`BOOTSTRAP.md` R0.2, `design_doc_sync.md` §3.1).
+freshness pin test ships as an optional module (§8) — install it when L3
+exists (`BOOTSTRAP.md` R0.2, `design_doc_sync.md` §3.1).
 
 ## 4. Bring-up order (matches BOOTSTRAP.md §2)
 
@@ -192,3 +193,19 @@ prints the lines for you to add by hand instead of editing your files. The
 protocol carries no domain authority and is fully reversible: archive any
 needed runtime records, then remove the board, the `workboard/` directory,
 `docs/skill/parallel_workboard.md`, and the two pointer lines.
+
+## 8. Optional module — L3 freshness pin
+
+Install with `--with-l3` once a human-facing documentation layer (L3) exists —
+not before (`BOOTSTRAP.md` R0.2). It adds one file:
+
+```
+tests/docs/test_l3_sources.py   # L2↔L3 pin test — EDIT L3_ROOTS (marked PORT)
+```
+
+Point `L3_ROOTS` at the directory holding your L3 pages. Each page that retells
+an L2 source declares `l3_sources` (doc + content hash) in its frontmatter; the
+test fails when a source moves past its pin, accepts an `l3_stale` reason as
+declared debt, and requires a mechanism companion to be pinned alongside its
+contract (`design_doc_sync.md` §3.1). With no pinned pages it collects nothing
+and stays green. To remove it, delete the file.

@@ -1,5 +1,6 @@
 """Kit-author checks; run here, unlike tests_docs/ which runs after install."""
 
+import hashlib
 import subprocess
 import sys
 from pathlib import Path
@@ -19,13 +20,13 @@ def install(target, *options):
     return result.stdout
 
 
-@pytest.mark.parametrize("workboard", [False, True])
-def test_fresh_install_and_rerun(tmp_path, workboard):
+@pytest.mark.parametrize("modules", [False, True])
+def test_fresh_install_and_rerun(tmp_path, modules):
     subprocess.run(["git", "init", "-b", "main", str(tmp_path)],
                    capture_output=True, check=True)
-    options = ["--with-ci"] + (["--with-workboard"] if workboard else [])
+    options = ["--with-ci"] + (["--with-workboard", "--with-l3"] if modules else [])
     install(tmp_path, *options)
-    if workboard:
+    if modules:
         # Use the module, not just its empty skeleton: templates must resolve
         # links both in templates/ and from their documented mailbox paths.
         board = tmp_path / "docs/in_process/workboard"
@@ -60,6 +61,39 @@ def test_add_workboard_preserves_existing_maps_and_prints_manual_steps(tmp_path)
     assert "parallel_workboard.md" in output
     assert "Coordinated multi-agent work:" in output
     assert (tmp_path / "docs/in_process/workboard/templates/task_card.md").is_file()
+
+
+def test_l3_module_pins_follow_their_source(tmp_path):
+    subprocess.run(["git", "init", "-b", "main", str(tmp_path)],
+                   capture_output=True, check=True)
+    install(tmp_path, "--with-l3")
+
+    def pytest_l3():
+        return subprocess.run(
+            [sys.executable, "-m", "pytest", "tests/docs/test_l3_sources.py", "-q"],
+            cwd=tmp_path, capture_output=True, text=True,
+        )
+
+    # No L3 pages yet: the module collects nothing and stays green.
+    assert pytest_l3().returncode in (0, 5)
+
+    source = tmp_path / "docs/design_auth.md"
+    source.write_text("# Auth\n\n> **Version:** 1.0\n", encoding="utf-8")
+    pinned = hashlib.sha256(source.read_bytes()).hexdigest()[:12]
+    page = tmp_path / "site/docs/auth.md"
+    page.parent.mkdir(parents=True)
+    header = f'---\nl3_sources:\n  - doc: docs/design_auth.md\n    hash: "{pinned}"\n'
+    page.write_text(header + "---\n\nAuth, as of v1.0.\n", encoding="utf-8")
+    first = pytest_l3()
+    assert first.returncode == 0, first.stdout + first.stderr
+
+    source.write_text("# Auth\n\n> **Version:** 1.0\n\nNew rule.\n", encoding="utf-8")
+    assert pytest_l3().returncode == 1
+
+    page.write_text(header + 'l3_stale: "misses the v1.0 new rule"\n---\n\nAuth.\n',
+                    encoding="utf-8")
+    stale = pytest_l3()
+    assert stale.returncode == 0, stale.stdout + stale.stderr
 
 
 def test_initial_branch_push_has_no_invalid_base(tmp_path):

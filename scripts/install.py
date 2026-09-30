@@ -6,6 +6,7 @@ Usage:
     python governance-kit/scripts/install.py <target-repo-root>
     python governance-kit/scripts/install.py <target-repo-root> --with-ci
     python governance-kit/scripts/install.py <target-repo-root> --with-workboard
+    python governance-kit/scripts/install.py <target-repo-root> --with-l3
 
 Behavior:
 - Copies every kit file to its MIGRATION.md target path.
@@ -19,6 +20,9 @@ Behavior:
   (modules/workboard/): the coordination protocol, an idle global board, the
   task/receipt/notice mailboxes and their templates. Only for projects where
   several agents, windows or vendors work in one repo at once.
+- With --with-l3, also installs the optional L3 freshness-pin test
+  (modules/l3/) as tests/docs/test_l3_sources.py. Only once a human-facing
+  docs layer exists; set its L3_ROOTS to where those pages live.
 
 After installing you still have to EDIT (the installer reminds you):
 - CLAUDE.md and docs/SPEC.md (replace every <placeholder>),
@@ -84,6 +88,9 @@ WORKBOARD_MAP: list[tuple[str, str]] = [
      "docs/in_process/workboard/templates/coordination_notice.md"),
 ]
 
+# Optional module: L2↔L3 freshness pin (see design_doc_sync.md §3.1).
+L3_MAP = ("modules/l3/test_l3_sources.py", "tests/docs/test_l3_sources.py")
+
 # Pointer lines the module adds to maps the core install just created. A map the
 # target already had is never edited; the installer prints the line instead.
 WORKBOARD_POINTERS: list[tuple[str, str, str]] = [
@@ -134,6 +141,8 @@ def main() -> int:
                              "(.github/workflows/docs.yml)")
     parser.add_argument("--with-workboard", action="store_true",
                         help="also install the optional parallel-workboard module")
+    parser.add_argument("--with-l3", action="store_true",
+                        help="also install the optional L3 freshness-pin test")
     parser.add_argument("--force", action="store_true",
                         help="allow installing into the repo that hosts the kit")
     args = parser.parse_args()
@@ -150,7 +159,8 @@ def main() -> int:
 
     copied, skipped = [], []
     mappings = (list(FILE_MAP) + ([CI_MAP] if args.with_ci else [])
-                + (WORKBOARD_MAP if args.with_workboard else []))
+                + (WORKBOARD_MAP if args.with_workboard else [])
+                + ([L3_MAP] if args.with_l3 else []))
     for src_rel, dest_rel in mappings:
         src = KIT_ROOT / src_rel
         if not src.is_file():
@@ -218,6 +228,9 @@ def main() -> int:
     if not args.with_ci:
         print("  (Docs workflow not installed; re-run with --with-ci, or wire "
               "templates/docs.example.yml by hand)")
+    if args.with_l3:
+        print("  EDIT L3_ROOTS in tests/docs/test_l3_sources.py to point at your "
+              "L3 pages (design_doc_sync.md section 3.1).")
 
     print("""
 Next steps (BOOTSTRAP.md section 2):

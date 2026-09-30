@@ -111,7 +111,9 @@ aggregation layer — it silently rots when the source moves — so it gets the 
 defense one edge higher: each L3 page **pins the L2 sources it aligned to** in
 its frontmatter, by **content hash** (e.g. the first 12 hex of sha256 over the
 source's bytes), and a test fails when a source advances past its pin. Do not add
-this tier until L3 exists (`BOOTSTRAP.md` R0.2).
+this tier until L3 exists (`BOOTSTRAP.md` R0.2). The kit ships this test as an
+optional module: `install.py --with-l3` installs `tests/docs/test_l3_sources.py`
+(`MIGRATION.md` §8).
 
 ```yaml
 l3_sources:

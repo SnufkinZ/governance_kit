@@ -55,7 +55,7 @@ plans, skills — from the first session, so it never makes a decision the loop 
 meant to capture (e.g. an architectural choice with no ADR) simply because the
 slot "didn't exist yet."
 
-**A3 — No island mechanisms, no silent doc skips.** A change that touches a
+**A3 — No silent doc skips.** A change that touches a
 documented contract updates that contract in the same change, or records on the
 commit line why it did not. (This is enforceable by the gate the moment Tier 3
 is switched to blocking; until then it is a discipline you still follow.)
@@ -168,7 +168,8 @@ Each phase = a set of relaxations + a graduation condition + the tightening acti
   do not fake a metric for it.
 - **Tightening action:**
   - Stand up the L3 layer (a docs website) **and** its freshness pin test
-    (`design_doc_sync.md` §3.1). → removes R0.2.
+    (`design_doc_sync.md` §3.1; install it with `install.py --with-l3`).
+    → removes R0.2.
   - Put Tier 4 (the `/doc-audit` skill, installed at
     `.claude/skills/doc-audit/`) on a real cadence (e.g. per milestone). →
     removes R0.3.

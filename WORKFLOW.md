@@ -97,9 +97,9 @@ structure, and the goals.
 | Audit | Run scheduled drift checks (§6.1) in fresh-context sessions. |
 
 The AI does **not**, by default: deviate from a documented design without
-surfacing the conflict; modify `PRINCIPLES.md`/`SPEC.md` unilaterally; add island
-mechanisms, hardcoded caps, or wide interfaces "for safety" without
-justification; or refactor opportunistically while doing other work.
+surfacing the conflict; modify `PRINCIPLES.md`/`SPEC.md` unilaterally; add
+mechanisms that sidestep the design principles, or wide interfaces "for
+safety", without justification; or refactor opportunistically while doing other work.
 
 ---
 
